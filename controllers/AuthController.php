@@ -1,6 +1,5 @@
 <?php
 
-session_start();
 
 require_once __DIR__ . '/../models/Usuario.php';
 
@@ -22,7 +21,7 @@ class AuthController {
                 $_SESSION['usuario_id'] = $usuario['id'];
                 $_SESSION['usuario_nome'] = $usuario['nome'];
 
-                header("Location: index.php");
+                header("Location: /trabalho-site-vendas-master/index.php");
                 exit;
 
             } else {
@@ -64,6 +63,6 @@ class AuthController {
 
         session_destroy();
 
-        header("Location: index.php");
+        header("Location: /trabalho-site-vendas-master/index.php");
     }
 }
