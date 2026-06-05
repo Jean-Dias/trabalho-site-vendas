@@ -11,17 +11,20 @@ class Database {
 
     public function conectar() {
 
-        $this->conn = new mysqli(
-            $this->host,
-            $this->user,
-            $this->pass,
-            $this->dbname
-        );
+        try {
+            $this->conn = new PDO(
+                "mysql:host={$this->host};dbname={$this->dbname};charset=utf8",
+                $this->user,
+                $this->pass
+            );
 
-        if ($this->conn->connect_error) {
-            die("Erro na conexão: " . $this->conn->connect_error);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+            return $this->conn;
+
+        } catch (PDOException $e) {
+            die("Erro na conexão: " . $e->getMessage());
         }
-
-        return $this->conn;
     }
 }
