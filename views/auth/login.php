@@ -1,10 +1,13 @@
 <?php
 session_start();
-
 require_once __DIR__ . '/../../controllers/AuthController.php';
+require_once __DIR__ . '/../../config/helpers.php';
 
 $controller = new AuthController();
-$controller->login();
+$erro = $controller->login();
+$sucesso = isset($_GET['cadastro']) ? "Cadastro realizado! Faça login." : null;
+
+$ultimoUsuario = obter_cookie_usuario();
 ?>
 
 <!DOCTYPE html>
@@ -12,26 +15,69 @@ $controller->login();
 <head>
     <meta charset="UTF-8">
     <title>Login - Marketplace</title>
+    <link rel="stylesheet" href="../../public/style.css">
 </head>
 <body>
 
-<h1>Login</h1>
+<nav>
+    <a href="../../index.php" class="nav-brand">Marketplace</a>
 
-<a href="../../index.php">Voltar ao início</a>
+    <ul class="nav-links">
+        <li><a href="../../views/produtos/listar.php">Produtos</a></li>
+        <li><a href="cadastro.php">Cadastro</a></li>
+    </ul>
 
-<hr>
+</nav>
 
-<form method="POST">
+<div class="form-card">
+    <h1>Bem-vindo</h1>
 
-    <input type="email" name="email" placeholder="Email" required>
-    <br><br>
+    <p class="subtitle">
 
-    <input type="password" name="senha" placeholder="Senha" required>
-    <br><br>
+        <?php if ($ultimoUsuario): ?>
+            Olá de volta, <strong><?= htmlspecialchars($ultimoUsuario) ?></strong>!
+        <?php else: ?>
+            Entre na sua conta para continuar
+        <?php endif; ?>
 
-    <button type="submit">Entrar</button>
+    </p>
 
-</form>
+    <?php if ($erro): ?>
 
+        <div class="alert alert-error"><?= $erro ?></div>
+
+    <?php endif; ?>
+
+    <?php if ($sucesso): ?>
+
+        <div class="alert alert-success"><?= $sucesso ?></div>
+
+    <?php endif; ?>
+
+    <form method="POST">
+
+        <?= campo_csrf() ?>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="seu@email.com" required>
+        </div>
+
+        <div class="form-group">
+            <label>Senha</label>
+            <input type="password" name="senha" placeholder="••••••••" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary form-submit">Entrar</button>
+    </form>
+
+    <div class="form-footer">
+        Não tem conta? <a href="cadastro.php">Cadastre-se</a><br><br>
+        <a href="recuperar.php">Esqueceu a senha?</a>
+    </div>
+
+</div>
+
+<script src="../../public/aaa.js"></script>
 </body>
 </html>

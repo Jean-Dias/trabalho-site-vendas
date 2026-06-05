@@ -7,15 +7,16 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 require_once __DIR__ . '/../../models/Produto.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/Categoria.php';
+require_once __DIR__ . '/../../config/helpers.php';
 
-$database = new Database();
-$conn = $database->conectar();
-$categorias = $conn->query("SELECT * FROM categorias")->fetch_all(MYSQLI_ASSOC);
-
-$mensagem = "";
+$categoriaModel = new Categoria();
+$categorias = $categoriaModel->listar();
+$erro = null;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    validar_csrf();
 
     $titulo       = $_POST['titulo'];
     $descricao    = $_POST['descricao'];
@@ -25,21 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $usuario_id   = $_SESSION['usuario_id'];
 
     $produtoModel = new Produto();
-
-    $resultado = $produtoModel->criar(
-        $titulo,
-        $descricao,
-        $preco,
-        $imagem,
-        $usuario_id,
-        $categoria_id
-    );
+    $resultado = $produtoModel->criar($titulo, $descricao, $preco, $imagem, $usuario_id, $categoria_id);
 
     if ($resultado) {
         header("Location: listar.php");
         exit;
     } else {
-        $mensagem = "Erro ao cadastrar produto.";
+        $erro = "Erro ao cadastrar produto.";
     }
 }
 ?>
@@ -48,45 +41,79 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Cadastrar Produto - Marketplace</title>
+    <title>Anunciar Produto - Marketplace</title>
+    <link rel="stylesheet" href="../../public/style.css">
 </head>
 <body>
 
-<h1>Cadastrar Produto</h1>
+<nav>
 
-<a href="listar.php">Voltar para produtos</a>
+    <a href="../../index.php" class="nav-brand">Marketplace</a>
+    <ul class="nav-links">
+        <li><a href="listar.php">Produtos</a></li>
+        <li><a href="../categorias/listar.php">Categorias</a></li>
+        <li><a href="../auth/logout.php">Sair</a></li>
+    </ul>
+    <span class="nav-user"> <?= htmlspecialchars($_SESSION['usuario_nome']) ?></span>
+    
+</nav>
 
-<hr>
+<div class="container">
+    <div class="breadcrumb">
+        <a href="listar.php">Produtos</a>
+        <span>›</span>
+        Anunciar
+    </div>
 
-<?php if ($mensagem): ?>
-    <p><?= $mensagem ?></p>
-<?php endif; ?>
+    <div class="form-card" style="max-width:600px">
+        <h1>Anunciar Produto</h1>
+        <p class="subtitle">Preencha as informações do seu produto</p>
 
-<form method="POST">
+        <?php if ($erro): ?>
+            <div class="alert alert-error"><?= $erro ?></div>
+        <?php endif; ?>
 
-    <label>Título:</label><br>
-    <input type="text" name="titulo" required><br><br>
+        <form method="POST">
 
-    <label>Descrição:</label><br>
-    <textarea name="descricao" required></textarea><br><br>
+            <?= campo_csrf() ?>
 
-    <label>Preço:</label><br>
-    <input type="number" name="preco" step="0.01" min="0" required><br><br>
+            <div class="form-group">
+                <label>Título</label>
+                <input type="text" name="titulo" placeholder="Ex: iPhone 14 Pro" required>
+            </div>
 
-    <label>Imagem (URL):</label><br>
-    <input type="text" name="imagem"><br><br>
+            <div class="form-group">
+                <label>Descrição</label>
+                <textarea name="descricao" placeholder="Descreva o produto..." required></textarea>
+            </div>
 
-    <label>Categoria:</label><br>
-    <select name="categoria_id" required>
-        <option value="">Selecione...</option>
-        <?php foreach ($categorias as $categoria): ?>
-            <option value="<?= $categoria['id'] ?>"><?= htmlspecialchars($categoria['nome']) ?></option>
-        <?php endforeach; ?>
-    </select><br><br>
+            <div class="form-group">
+                <label>Preço (R$)</label>
+                <input type="number" name="preco" step="0.01" min="0" placeholder="0,00" required>
+            </div>
 
-    <button type="submit">Cadastrar</button>
+            <div class="form-group">
+                <label>URL da Imagem (opcional)</label>
+                <input type="text" name="imagem" placeholder="https://...">
+            </div>
 
-</form>
+            <div class="form-group">
+                <label>Categoria</label>
+                <select name="categoria_id" required>
 
+                    <option value="">Selecione uma categoria...</option>
+
+                    <?php foreach ($categorias as $cat): ?>
+                        <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['nome']) ?></option>
+                    <?php endforeach; ?>
+
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary form-submit">Publicar Anúncio</button>
+        </form>
+    </div>
+</div>
+
+<script src="../../public/aaa.js"></script>
 </body>
 </html>
