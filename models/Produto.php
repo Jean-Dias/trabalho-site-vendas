@@ -19,9 +19,10 @@ class Produto {
                 JOIN categorias ON produtos.categoria_id = categorias.id
                 ORDER BY produtos.created_at DESC";
 
-        $result = $this->conn->query($sql);
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
 
-        return $result->fetch_all(MYSQLI_ASSOC);
+        return $stmt->fetchAll();
     }
 
     public function buscarPorId($id) {
@@ -29,47 +30,39 @@ class Produto {
         $sql = "SELECT produtos.*, categorias.nome AS categoria_nome
                 FROM {$this->table}
                 JOIN categorias ON produtos.categoria_id = categorias.id
-                WHERE produtos.id = ?";
+                WHERE produtos.id = :id";
 
         $stmt = $this->conn->prepare($sql);
-
-        $stmt->bind_param("i", $id);
-
+        $stmt->bindParam(':id', $id);
         $stmt->execute();
 
-        $result = $stmt->get_result();
-
-        return $result->fetch_assoc();
+        return $stmt->fetch();
     }
 
     public function criar($titulo, $descricao, $preco, $imagem, $usuario_id, $categoria_id) {
 
         $sql = "INSERT INTO {$this->table}
                 (titulo, descricao, preco, imagem, usuario_id, categoria_id)
-                VALUES (?, ?, ?, ?, ?, ?)";
+                VALUES (:titulo, :descricao, :preco, :imagem, :usuario_id, :categoria_id)";
 
         $stmt = $this->conn->prepare($sql);
 
-        $stmt->bind_param(
-            "ssdsii",
-            $titulo,
-            $descricao,
-            $preco,
-            $imagem,
-            $usuario_id,
-            $categoria_id
-        );
+        $stmt->bindParam(':titulo', $titulo);
+        $stmt->bindParam(':descricao', $descricao);
+        $stmt->bindParam(':preco', $preco);
+        $stmt->bindParam(':imagem', $imagem);
+        $stmt->bindParam(':usuario_id', $usuario_id);
+        $stmt->bindParam(':categoria_id', $categoria_id);
 
         return $stmt->execute();
     }
 
     public function deletar($id) {
 
-        $sql = "DELETE FROM {$this->table} WHERE id = ?";
+        $sql = "DELETE FROM {$this->table} WHERE id = :id";
 
         $stmt = $this->conn->prepare($sql);
-
-        $stmt->bind_param("i", $id);
+        $stmt->bindParam(':id', $id);
 
         return $stmt->execute();
     }
