@@ -8,8 +8,7 @@ class Categoria {
     private $table = "categorias";
 
     public function __construct() {
-        $database = new Database();
-        $this->conn = $database->conectar();
+        $this->conn = Database::getConnection();
     }
 
     public function listar() {

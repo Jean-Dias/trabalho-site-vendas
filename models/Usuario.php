@@ -8,8 +8,7 @@ class Usuario {
     private $table = "usuarios";
 
     public function __construct() {
-        $database = new Database();
-        $this->conn = $database->conectar();
+        $this->conn = Database::getConnection();
     }
 
     public function cadastrar($nome, $email, $senha, $cpf, $data_nascimento) {
