@@ -24,7 +24,7 @@ class AuthController {
 
                 definir_cookie_usuario($usuario['nome']);
 
-                header("Location: /trabalho-site-vendas-master/index.php");
+                header("Location: /trabalho-site-vendas/index.php");
                 exit;
 
             } else {
@@ -51,7 +51,7 @@ class AuthController {
             $resultado = $usuarioModel->cadastrar($nome, $email, $senha, $cpf, $data_nascimento);
 
             if ($resultado) {
-                header("Location: /trabalho-site-vendas-master/views/auth/login.php?cadastro=sucesso");
+                header("Location: /trabalho-site-vendas/views/auth/login.php?cadastro=sucesso");
                 exit;
             } else {
                 return "Erro ao cadastrar. Tente novamente.";
@@ -90,7 +90,7 @@ class AuthController {
         remover_cookie_usuario();
         session_destroy();
 
-        header("Location: /trabalho-site-vendas-master/index.php");
+        header("Location: /trabalho-site-vendas/index.php");
         exit;
     }
 }

@@ -24,7 +24,13 @@ function campo_csrf() {
 }
 
 function definir_cookie_usuario($nome) {
-    setcookie('ultimo_usuario', $nome, time() + (86400 * 30), '/');
+    setcookie('ultimo_usuario', $nome, [
+        'expires' => time() + (86400 * 30),
+        'path' => '/',
+        'secure' => false,  
+        'httponly' => true, 
+        'samesite' => 'Lax' 
+    ]);
 }
 
 function obter_cookie_usuario() {
@@ -32,5 +38,11 @@ function obter_cookie_usuario() {
 }
 
 function remover_cookie_usuario() {
-    setcookie('ultimo_usuario', '', time() - 3600, '/');
+    setcookie('ultimo_usuario', '', [
+        'expires' => time() - 3600,
+        'path' => '/',
+        'secure' => false,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
 }
