@@ -1,5 +1,5 @@
 <?php
-
+ // Será apresentado por Kaua
 require_once __DIR__ . '/../models/Categoria.php';
 require_once __DIR__ . '/../config/helpers.php';
 

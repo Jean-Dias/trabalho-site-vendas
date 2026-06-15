@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+ // feito e  apresentado por Kaua
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: ../auth/login.php");
     exit;
