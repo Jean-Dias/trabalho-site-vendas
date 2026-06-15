@@ -22,7 +22,7 @@ session_start();
 
             <li><a href="views/produtos/criar.php">Anunciar</a></li>
             <li><a href="views/auth/logout.php">Sair</a></li>
-            
+
         <?php else: ?>
 
             <li><a href="views/auth/login.php">Login</a></li>
@@ -32,29 +32,48 @@ session_start();
     </ul>
 
     <?php if (isset($_SESSION['usuario_nome'])): ?>
-        <span class="nav-user"><?= htmlspecialchars($_SESSION['usuario_nome']) ?></span>
+        <span class="nav-user">
+            <?= htmlspecialchars($_SESSION['usuario_nome']) ?>
+        </span>
     <?php endif; ?>
-    
+
 </nav>
 
 <div class="hero">
-    
-    <h1>Compre e Venda com Facilidade</h1>
-    <p>O melhor marketplace para encontrar produtos incríveis ou anunciar o que você tem.</p>
-    
-    <a href="views/produtos/listar.php" class="btn btn-primary">Ver Produtos</a>
-    
-    &nbsp;
-    
+
+    <h1>Marketplace de Compra e Venda</h1>
+
+    <p>
+        Encontre produtos de diversas categorias e anuncie seus itens
+        de forma rápida, simples e segura.
+    </p>
+
+    <p class="hero-info">
+        Produtos • Categorias • Anúncios
+    </p>
+
+    <a href="views/produtos/listar.php" class="btn btn-primary">
+        Ver Produtos
+    </a>
+
     <?php if (isset($_SESSION['usuario_id'])): ?>
-        
-        <a href="views/produtos/criar.php" class="btn btn-outline">Anunciar Agora</a>
-    
-        <?php else: ?>
-        
-            <a href="views/auth/cadastro.php" class="btn btn-outline">Criar Conta</a>
-    
-        <?php endif; ?>
+
+        <a href="views/produtos/criar.php" class="btn btn-outline">
+            Anunciar Agora
+        </a>
+
+    <?php else: ?>
+
+        <a href="views/auth/cadastro.php" class="btn btn-outline">
+            Criar Conta
+        </a>
+
+    <?php endif; ?>
+
+    <small>
+        Navegue pelos produtos disponíveis ou anuncie seus próprios itens.
+    </small>
+
 </div>
 
 </body>
